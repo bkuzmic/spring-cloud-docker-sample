@@ -1,0 +1,9 @@
+bin/
+target/
+
+# IntelliJ IDEA
+.idea*
+*.iml
+
+# Sonar runner config file
+.sonar

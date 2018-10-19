@@ -1,0 +1,15 @@
+server:
+  port: ${PORT:8761}
+
+spring:
+  application:
+    name: eurekaserver
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    server:
+      waitTimeInMsWhenSyncEmpty: 0

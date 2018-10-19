@@ -1,0 +1,51 @@
+version: '3'
+spri
+services:
+  eureka-server:
+    image: spring-cloud-docker-eureka-server
+    networks:
+      - spring-cloud-network
+    expose:
+      - "8761"
+  config-server:
+    image: spring-cloud-docker-config-server
+    networks:
+      - spring-cloud-network
+    expose:
+      - "8888"
+    links:
+      - eureka-server
+    depends_on:
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    volumes:
+      - './git_config/:/config'
+  app:
+    image: spring-cloud-docker-app
+    networks:
+      - spring-cloud-network
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    links:
+      - eureka-server
+      - config-server
+    depends_on:
+      - eureka-server
+      - config-server
+    environment:
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      #EUREKA_CLIENT_REGISTRYFETCHINTERVALSECONDS: 10
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+
+networks:
+  spring-cloud-network:
+    ipam:
+      driver: default
+      config:
+      -
+        subnet: 169.100.100.0/24
